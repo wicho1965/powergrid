@@ -14,6 +14,7 @@ use PowerComponents\LivewirePowerGrid\Header;
 use PowerComponents\LivewirePowerGrid\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridFields;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
+use PowerComponents\LivewirePowerGrid\Themes\Components\Toggleable;
 use PowerComponents\LivewirePowerGrid\Traits\WithExport;
 
 final class PostTable extends PowerGridComponent
@@ -65,18 +66,13 @@ final class PostTable extends PowerGridComponent
 
             Column::make('Content', 'content')
                 ->sortable()
-                ->searchable(),
+                ->searchable()
+                ->editOnClick(hasPermission:true),
 
             Column::make('Status', 'status')
                 ->sortable()
-                ->searchable(),
-
-            Column::make('Created at', 'created_at_formatted', 'created_at')
-                ->sortable(),
-
-            Column::make('Created at', 'created_at')
-                ->sortable()
-                ->searchable(),
+                ->searchable()
+                ->toggleable(hasPermission:true),
 
             Column::action('Action')
         ];
@@ -105,15 +101,12 @@ final class PostTable extends PowerGridComponent
         ];
     }
 
-    /*
-    public function actionRules($row): array
+    public function onUpdatedEditable(int|string $id, string $field, string $value): void
+
     {
-       return [
-            // Hide button edit for ID 1
-            Rule::button('edit')
-                ->when(fn($row) => $row->id === 1)
-                ->hide(),
-        ];
+       Post::query()->find($id)->update([
+        $field => $value
+       ]);
+
     }
-    */
 }
